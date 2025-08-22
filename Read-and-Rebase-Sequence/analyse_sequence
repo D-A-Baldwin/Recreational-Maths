@@ -1,0 +1,49 @@
+
+
+N = 10**8 # How many terms to work out, 10^8 takes about 20 mins to run
+cutoff = 1000
+lengths = [] 
+cycle_lengths = []
+cycles = []
+last_number = []
+for i in range(1,N + 1):
+    x = L(i, cutoff)
+    len_seq = x[0]
+    lengths.append(len_seq)
+    cycle_lengths.append(x[2])
+    if x[2] == 1:
+        last_number.append(x[1][-1])
+    elif x[2] == 4:
+        cycles.append(x[1][-3:])
+
+
+list(set(cycle_lengths))
+# [1, 4]
+
+list(set(lengths))
+# [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+
+cycle_lengths.count(4)
+# 615093
+
+# All the cycles
+[list(i) for i in set(tuple(i) for i in cycles)]
+# [[436, 277, 115, 223], [223, 436, 277, 115], [277, 115, 223, 436], [115, 223, 436, 277]]
+
+[lengths.count(i) for i in list(set(lengths))]
+# [19449, 1261594, 7952551, 20270217, 21428429, 19414737, 10459766, 6197623, 4204143, 2613735, 1665765, 1481283, 1154876, 849125, 666627, 238722, 90085, 18975, 6934, 4261, 1097, 6]
+
+p = [i for i, n in enumerate(lengths) if n == 22]
+p
+# [26243999, 29001119, 41311151, 42151103, 42200351, 76159999]
+
+#######
+y_coords = [lengths.index(i) + 1 for i in range(1,23)]
+
+fig = plt.figure()
+ax = fig.add_subplot(2, 1, 1)
+
+ax.plot(range(1,23), y_coords)
+ax.set_yscale('log')
+plt.ylabel("Minimum value of n for which L(n) = x")
+#######
