@@ -1,0 +1,74 @@
+F := function(n)
+	local ListFromNumber, NumberFromList, b, n_base_b, n_prime;
+	
+	ListFromNumber := function(num, base)
+	  local digits;
+	  digits := [];
+	  while num > 0 do
+		Add(digits, num mod base);
+		num := Int(num/base);
+	  od;
+	  return Reversed(digits);
+	end;
+
+	NumberFromList := function(list, base)
+	  local sum, i;
+	  sum := 0;
+	  for i in [0..Length(list)-1] do
+		sum := sum + (Reversed(list)[i+1] * base^i);
+	  od;
+	  return sum;
+	end;
+
+	b := Sum(ListFromNumber(n, 10));
+
+	if n <=0 then
+		Print("n must be a positive natural number");
+	elif b = 1 then
+		return n;
+	else
+		n_base_b := ListFromNumber(n, b);
+		
+		n_prime := NumberFromList(n_base_b, 10);
+		
+		return n_prime;
+	fi;
+end;
+
+F_Iterated := function(n, length)
+	local n_prime, seq, i;
+	
+	n_prime := F(n);
+	
+	for i in [1..length-1] do
+		n_prime := F(n_prime);
+	od;
+	
+	return n_prime;
+end;
+
+L := function(n, cutoff)
+	local n_prime, seq, i, p, cycle_length, found_cycle;
+	
+	seq := [n];
+	
+	found_cycle := false;
+	i := 1;
+	while i <= cutoff do
+		i := i + 1;
+		n_prime := F(seq[i-1]);
+		Add(seq, n_prime);
+		if seq[i] in seq{[1..i-1]} then
+			found_cycle := true;
+			p := Positions(seq, seq[i]);
+			cycle_length :=  p[2] - p[1];
+			Remove(seq, i);
+			break;
+		fi;
+	od;
+	if found_cycle then
+		return [Length(seq), seq, cycle_length];
+	else
+		Print(cutoff, " iterations were carried out without reaching a cycle or fixed point");
+	fi;
+end;
