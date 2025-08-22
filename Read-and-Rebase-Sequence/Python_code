@@ -1,0 +1,48 @@
+
+def list_from_number(num, base):
+    digits = []
+    while num > 0:
+        digits.append(num % base)
+        num = num // base
+    digits.reverse()
+    return digits
+
+def number_from_list(lst, base):
+    return sum([lst[len(lst) - i - 1] * base**i 
+                for i in range(0, len(lst))])
+    
+
+def F(n):
+    b = sum(list_from_number(n, 10))
+    
+    if n <= 0:
+        print("n must be a positive natural number")
+    elif b == 1:
+        return n
+    else:
+        n_base_b = list_from_number(n, b)
+        n_prime = number_from_list(n_base_b, 10)
+        return n_prime
+
+def L(n, cutoff):
+    seq = [n]
+    found_cycle = False
+    
+    i = 0
+    while i < cutoff:
+        i += 1
+        n_prime = F(seq[i-1])
+        seq.append(n_prime)
+        if seq[i] in seq[0:i]:
+            found_cycle = True
+            p = [x for x, n in enumerate(seq) if n == seq[i]]
+            cycle_length = p[1] - p[0]
+            seq.pop(i)
+            break
+        
+    if found_cycle:
+        return [len(seq), seq, cycle_length]
+    else:
+        print(cutoff, " iterations were carried out without reaching a cycle or fixed point")
+        return([len(seq), seq])
+       
